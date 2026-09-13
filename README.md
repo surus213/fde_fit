@@ -9,6 +9,30 @@ FDE(Forward Deployed Engineer)에 가까운 공고를 찾아 후보자와의 직
 LangGraph 워크플로로 분석하며, 결과를 JSON과 브라우저에서 열 수 있는 HTML로
 저장합니다.
 
+## 한눈에 보기
+
+원티드에서 데이원컴퍼니의 활성 공고를 수집하고, FDE 유사도를 분류한 뒤, 선택한
+`Forward Deployed Engineer` 공고를 회사·직장 조사와 후보자 적합도 분석으로
+연결합니다.
+
+```mermaid
+flowchart LR
+  A[원티드 활성 공고] --> B[전체 공고 수집]
+  B --> C[FDE 유사도 분류]
+  C --> D[데이원컴퍼니 FDE 선택]
+  D --> E[회사·직장 조사]
+  E --> F[직무 적합도 분석]
+  F --> G[JSON + HTML 보고서]
+```
+
+### 예시 결과: 데이원컴퍼니 FDE
+
+아래 화면은 후보자 식별 정보와 연봉 등 보상 정보를 제거한 공개용 HTML 예시입니다.
+
+[![데이원컴퍼니 FDE 직무 적합도 예시](docs/day1-fde-example.png)](docs/day1-fde-example.html)
+
+예시 원문: [docs/day1-fde-example.html](docs/day1-fde-example.html)
+
 ## 주요 기능
 
 - 회사명으로 원티드 회사 검색

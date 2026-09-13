@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>데이원컴퍼니 FDE 직무 적합도 예시</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#667085; --line:#e7eaf0; --paper:#fff; --bg:#f4f6fa; --primary:#4255ff; --good:#0e8f66; --risk:#d14b4b; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif; line-height:1.65; }
+    main { width:min(1040px,calc(100% - 32px)); margin:40px auto 72px; }
+    .hero, section { background:var(--paper); border:1px solid var(--line); border-radius:18px; box-shadow:0 10px 30px rgba(31,42,68,.06); }
+    .hero { padding:34px; background:linear-gradient(135deg,#172033,#303f91); color:#fff; }
+    .eyebrow { margin:0 0 8px; color:#cdd4ff; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; font-size:clamp(28px,5vw,46px); line-height:1.15; }
+    .position { margin:10px 0 0; color:#e5e8ff; font-size:18px; }
+    .meta { display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:22px; color:#d8dcf5; }
+    .badge { display:inline-block; padding:3px 9px; border:1px solid #9ca8ff; border-radius:999px; color:#fff; font-size:12px; }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:18px 0; }
+    .metric { padding:22px; background:var(--paper); border:1px solid var(--line); border-radius:16px; }
+    .metric span { display:block; color:var(--muted); font-size:13px; }
+    .metric strong { display:block; margin-top:5px; font-size:26px; }
+    section { padding:28px; margin-top:18px; }
+    h2 { margin:0 0 14px; font-size:21px; } p { margin:0; } ul { margin:0; padding-left:22px; } li + li { margin-top:9px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .good h2 { color:var(--good); } .risk h2 { color:var(--risk); }
+    footer { margin-top:20px; text-align:center; color:var(--muted); font-size:13px; }
+    @media (max-width:720px) { .metrics,.grid { grid-template-columns:1fr; } main { margin-top:16px; } .hero,section { border-radius:14px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <p class="eyebrow">FDE Job Fit Report · 공개용 예시</p>
+      <h1>데이원컴퍼니</h1>
+      <p class="position">Forward Deployed Engineer (FDE)</p>
+      <div class="meta"><span>민감 정보 제거 완료</span><span class="badge">Example</span></div>
+    </header>
+    <div class="metrics">
+      <div class="metric"><span>적합도</span><strong>8.0 / 10</strong></div>
+      <div class="metric"><span>신뢰도</span><strong>80%</strong></div>
+      <div class="metric"><span>추천</span><strong>면접 진행</strong></div>
+    </div>
+    <section>
+      <h2>최종 결론</h2>
+      <p>고객 현장의 문제를 정의하고 AI 솔루션을 구현·배포하는 업무가 FDE 목표와 잘 맞습니다. 실제 고객사 상주 기간과 제품화 범위를 면접에서 확인하는 것을 권장합니다.</p>
+    </section>
+    <div class="grid">
+      <section class="good">
+        <h2>적합한 이유</h2>
+        <ul><li>고객 문제 정의부터 PoC, 배포와 운영까지 end-to-end로 참여할 수 있습니다.</li><li>현장 피드백을 재사용 가능한 제품과 방법론으로 발전시킬 여지가 있습니다.</li><li>고객과 제품팀 사이에서 기술적 의사소통을 담당하는 역할입니다.</li></ul>
+      </section>
+      <section class="risk">
+        <h2>확인할 사항</h2>
+        <ul><li>고객사 방문과 상주의 평균·최대 기간</li><li>PoC의 본계약 전환 사례와 제품화 비중</li><li>팀 구성, 성공 기준과 업무 시간</li></ul>
+      </section>
+    </div>
+    <footer>fde-fit · 개인 식별 정보와 보상 정보가 제거된 문서 예시</footer>
+  </main>
+</body>
+</html>

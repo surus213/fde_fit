@@ -145,10 +145,12 @@ def write_reports(
     final_result: dict[str, Any],
     position: str = "",
     source_url: str = "",
+    job_id: int | None = None,
 ) -> tuple[Path, Path]:
     """회사명 기반 JSON과 HTML 보고서를 함께 저장합니다."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    stem = f"{safe_company_filename(company_name)}_final_job_fit"
+    job_suffix = f"_{job_id}" if job_id is not None else ""
+    stem = f"{safe_company_filename(company_name)}{job_suffix}_final_job_fit"
     json_path = output_dir / f"{stem}.json"
     html_path = output_dir / f"{stem}.html"
 

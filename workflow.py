@@ -19,12 +19,13 @@ from classify_fde import (
     FDEJobAssessment,
     classify_fde_jobs,
 )
+from comparison_report import write_comparison_reports
 from html_report import write_reports
+from multi_job_analysis import run_fde_job_comparison
 from wanted_jobs import (
     WantedAPIError,
     WantedJob,
     find_company_jobs,
-    format_job_text,
     get_job_details,
 )
 
@@ -117,36 +118,15 @@ def run_workflow(job_text: str, candidate_profile: dict) -> dict:
     return current_state
 
 
-def _select_fde_job(jobs: list[WantedJob], requested_job_id: int | None) -> WantedJob:
-    if requested_job_id is not None:
-        for job in jobs:
-            if job.id == requested_job_id:
-                return job
-        available = ", ".join(str(job.id) for job in jobs)
-        raise ValueError(
-            f"--job-id {requested_job_id}는 검색된 FDE 공고가 아닙니다. "
-            f"선택 가능한 ID: {available}"
-        )
-
-    if len(jobs) == 1:
-        return jobs[0]
-
-    print("\n분석할 FDE 공고를 선택하세요.")
-    for index, job in enumerate(jobs, start=1):
-        print(f"  {index}. {job.title} (ID: {job.id})")
-
-    if not sys.stdin.isatty():
-        available = ", ".join(str(job.id) for job in jobs)
-        raise ValueError(
-            "FDE 공고가 여러 개입니다. 비대화형 실행에서는 "
-            f"--job-id를 지정해주세요: {available}"
-        )
-
-    while True:
-        answer = input(f"번호를 입력하세요 [1-{len(jobs)}]: ").strip()
-        if answer.isdigit() and 1 <= int(answer) <= len(jobs):
-            return jobs[int(answer) - 1]
-        print("올바른 번호를 입력해주세요.")
+def _find_requested_job(jobs: list[WantedJob], requested_job_id: int) -> WantedJob:
+    for job in jobs:
+        if job.id == requested_job_id:
+            return job
+    available = ", ".join(str(job.id) for job in jobs)
+    raise ValueError(
+        f"--job-id {requested_job_id}는 검색된 FDE형 공고가 아닙니다. "
+        f"선택 가능한 ID: {available}"
+    )
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -160,7 +140,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--job-id",
         type=int,
-        help="동일 회사에 FDE 공고가 여러 개일 때 분석할 원티드 공고 ID",
+        help="전체 FDE형 공고 대신 하나만 분석할 원티드 공고 ID",
     )
     parser.add_argument(
         "--job-file",
@@ -209,7 +189,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"후보자 프로필 JSON이 올바르지 않습니다: {exc}", file=sys.stderr)
         return 2
 
-    selected_job: WantedJob | None = None
     if args.company:
         try:
             company, all_jobs = find_company_jobs(args.company)
@@ -258,32 +237,80 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(f"    근거: {'; '.join(assessment.reasons)}")
             print(f"    {job.source_url}")
 
-        try:
-            selected_job = _select_fde_job(fde_jobs, args.job_id)
-        except ValueError as exc:
-            print(str(exc), file=sys.stderr)
-            return 2
+        jobs_to_analyze = fde_jobs
+        assessments_to_analyze = fde_assessments
+        if args.job_id is not None:
+            try:
+                requested_job = _find_requested_job(fde_jobs, args.job_id)
+            except ValueError as exc:
+                print(str(exc), file=sys.stderr)
+                return 2
+            jobs_to_analyze = [requested_job]
+            assessments_to_analyze = [assessments_by_id[requested_job.id]]
 
-        job_text = format_job_text(selected_job, job_details[selected_job.id])
-        company_name = selected_job.company_name
-        position = selected_job.title
-        source_url = selected_job.source_url
-        print(f"\n선택한 공고: {position}")
-    else:
-        try:
-            job_text = args.job_file.read_text(encoding="utf-8")
-        except FileNotFoundError:
-            print(f"채용공고 파일을 찾지 못했습니다: {args.job_file}", file=sys.stderr)
-            return 2
-        company_name = ""
-        position = ""
-        source_url = ""
+        print(
+            f"\n🚀 FDE형 공고 {len(jobs_to_analyze)}개의 비교 분석을 시작합니다.\n",
+            flush=True,
+        )
+        comparison = run_fde_job_comparison(
+            company.name,
+            jobs_to_analyze,
+            job_details,
+            assessments_to_analyze,
+            candidate_profile,
+            total_active_jobs=len(all_jobs),
+            total_fde_like_jobs=len(fde_jobs),
+            progress=lambda message: print(f"✅ {message}", flush=True),
+        )
+
+        print("\n===== FDE형 공고 종합 순위 =====\n")
+        for item in comparison["rankings"]:
+            final = item["final_job_fit"]
+            fde_si = item["fde_si_analysis"]
+            print(
+                f"{item['rank']}. {item['position']} · "
+                f"적합도 {final['fit_score']}/10 · "
+                f"신뢰도 {final['confidence']:.0%} · "
+                f"FDE/SI {fde_si['fde_score']}/{fde_si['si_score']} · "
+                f"{final['recommendation']}"
+            )
+
+        print("\n공고별 결과 파일:")
+        for item in comparison["rankings"]:
+            json_path, html_path = write_reports(
+                args.output_dir,
+                company.name,
+                item["final_job_fit"],
+                item["position"],
+                item["source_url"],
+                job_id=item["job_id"],
+            )
+            print(f"  - {json_path}")
+            print(f"  - {html_path}")
+
+        comparison_json, comparison_html = write_comparison_reports(
+            args.output_dir,
+            comparison,
+        )
+        print(f"\n비교 JSON 저장: {comparison_json}")
+        print(f"비교 HTML 저장: {comparison_html}")
+
+        if args.open_report:
+            webbrowser.open(comparison_html.resolve().as_uri())
+
+        return 0
+
+    try:
+        job_text = args.job_file.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        print(f"채용공고 파일을 찾지 못했습니다: {args.job_file}", file=sys.stderr)
+        return 2
 
     current_state = run_workflow(job_text, candidate_profile)
     final_result = current_state["final_job_fit"]
     job_info = current_state.get("job_info", {})
-    company_name = company_name or job_info.get("company") or "company"
-    position = position or job_info.get("position") or ""
+    company_name = job_info.get("company") or "company"
+    position = job_info.get("position") or ""
 
     print("===== 최종 결과 =====\n")
     print(json.dumps(final_result, ensure_ascii=False, indent=2))
@@ -293,7 +320,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         company_name,
         final_result,
         position,
-        source_url,
+        "",
     )
     print(f"\nJSON 저장: {json_path}")
     print(f"HTML 저장: {html_path}")

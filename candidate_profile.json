@@ -1,0 +1,49 @@
+{
+  "candidate": {
+    "experience_years": 0,
+    "career_stage": "",
+    "current_status": "",
+    "available_from": "",
+    "known_gaps": []
+  },
+  "target_roles": [],
+  "priorities": {
+    "fde_fit": 0,
+    "resume_three_lines": 0,
+    "work_life_balance": 0,
+    "salary": 0,
+    "management": 0,
+    "technical_growth": 0,
+    "formal_track_record": 0,
+    "culture": 0,
+    "stability": 0
+  },
+  "priority_notes": {
+    "resume_three_lines": "",
+    "work_life_balance": "",
+    "management": "",
+    "formal_track_record": "",
+    "salary": ""
+  },
+  "compensation": {
+    "previous_salary": 0,
+    "target": 0,
+    "acceptable_range": [0, 0],
+    "hard_floor": 0,
+    "unit": "",
+    "notes": []
+  },
+  "work_conditions": {
+    "weekly_hours_max": 0,
+    "preferred_weekly_hours": 0,
+    "onsite_visit_ok": false,
+    "long_term_client_residency": false,
+    "location": "",
+    "notes": ""
+  },
+  "avoid": [],
+  "red_flags": [],
+  "must_verify_before_joining": [],
+  "strengths_to_lead_with": [],
+  "decision_rule": ""
+}

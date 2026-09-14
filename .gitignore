@@ -13,3 +13,4 @@ wheels/
 .env
 .env.*
 .DS_Store
+candidate_profile.json

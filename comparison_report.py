@@ -16,6 +16,13 @@ DIMENSION_LABELS = {
     "stability_growth": "안정성·성장성",
 }
 
+FOUR_FACTOR_LABELS = {
+    "salary": "연봉",
+    "work_life_balance": "워라밸",
+    "stability": "안정성",
+    "growth": "성장성",
+}
+
 
 def _text(value: Any, fallback: str = "정보 없음") -> str:
     if value is None or value == "":
@@ -57,6 +64,8 @@ def _ranking_summary_rows(rankings: list[dict[str, Any]]) -> str:
         final = item.get("final_job_fit") or {}
         classification = item.get("fde_classification") or {}
         fde_si = item.get("fde_si_analysis") or {}
+        four_factor = item.get("four_factor_evaluation") or {}
+        four_factor_summary = four_factor.get("summary") or {}
         rows.append(
             "<tr>"
             f'<td><span class="rank-small">{escape(_text(item.get("rank")))}</span></td>'
@@ -68,6 +77,7 @@ def _ranking_summary_rows(rankings: list[dict[str, Any]]) -> str:
             f'<td>{escape(_text(classification.get("fde_score")))} / 10</td>'
             f'<td>{escape(_text(fde_si.get("fde_score")))} / '
             f'{escape(_text(fde_si.get("si_score")))}</td>'
+            f'<td>{escape(_text(four_factor_summary.get("weighted_score"), "-"))} / 10</td>'
             "</tr>"
         )
     return "".join(rows)
@@ -79,6 +89,8 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
         final = item.get("final_job_fit") or {}
         classification = item.get("fde_classification") or {}
         fde_si = item.get("fde_si_analysis") or {}
+        four_factor = item.get("four_factor_evaluation") or {}
+        four_factor_summary = four_factor.get("summary") or {}
         confidence = final.get("confidence")
         confidence_text = (
             f"{float(confidence) * 100:.0f}%"
@@ -89,6 +101,13 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
         fde_score = _score(classification.get("fde_score"))
         fde_si_score = _score(fde_si.get("fde_score"))
         si_score = _score(fde_si.get("si_score"))
+        four_factor_score = _score(four_factor_summary.get("weighted_score"))
+        four_factor_confidence = four_factor_summary.get("overall_confidence")
+        four_factor_confidence_text = (
+            f"{float(four_factor_confidence) * 100:.0f}%"
+            if isinstance(four_factor_confidence, (int, float))
+            else "-"
+        )
 
         cards.append(
             f"""
@@ -96,10 +115,10 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
   <div class="job-heading">
     <span class="rank">#{escape(_text(item.get('rank')))}</span>
     <div>
-      <p class="overline">원티드 공고 ID {escape(_text(item.get('job_id')))}</p>
+      <p class="overline">공고 ID {escape(_text(item.get('job_id')))}</p>
       <h2>{escape(_text(item.get('position')))}</h2>
       <a href="{escape(_text(item.get('source_url')), quote=True)}" target="_blank"
-         rel="noopener noreferrer">원티드 공고 열기 ↗</a>
+         rel="noopener noreferrer">원본 공고 열기 ↗</a>
     </div>
   </div>
   <div class="metrics">
@@ -108,6 +127,8 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
     {_metric('탐색 FDE 유사도', f'{fde_score:g} / 10', fde_score)}
     {_metric('정밀 FDE 점수', f'{fde_si_score:g} / 10', fde_si_score)}
     {_metric('SI 점수', f'{si_score:g} / 10', si_score)}
+    {_metric('4팩터 종합', f'{four_factor_score:g} / 10', four_factor_score)}
+    {_metric('4팩터 신뢰도', four_factor_confidence_text)}
   </div>
   <div class="recommendation">
     <span>추천</span><strong>{escape(_text(final.get('recommendation')))}</strong>
@@ -121,6 +142,7 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
   </div>
   <section class="verify"><h3>지원 전에 확인할 사항</h3>
     {_list_html(final.get('must_verify_before_joining'), '추가 확인 항목이 없습니다.')}</section>
+  {_four_factor_table(four_factor)}
   <details><summary>FDE 후보 판정 근거</summary>
     {_list_html(classification.get('reasons'), '판정 근거가 없습니다.')}
     <h4>부족하거나 확인되지 않은 신호</h4>
@@ -130,6 +152,37 @@ def _ranking_cards(rankings: list[dict[str, Any]]) -> str:
 """
         )
     return "".join(cards)
+
+
+def _four_factor_table(evaluation: dict[str, Any]) -> str:
+    factors = evaluation.get("factors") or {}
+    if not factors:
+        return ""
+    rows = []
+    for key, label in FOUR_FACTOR_LABELS.items():
+        factor = factors.get(key) or {}
+        confidence = factor.get("confidence")
+        confidence_text = (
+            f"{float(confidence) * 100:.0f}%"
+            if isinstance(confidence, (int, float))
+            else "-"
+        )
+        score = factor.get("score")
+        score_text = f"{float(score):g} / 10" if isinstance(score, (int, float)) else "-"
+        rows.append(
+            "<tr>"
+            f"<th>{escape(label)}</th>"
+            f"<td>{escape(score_text)}</td>"
+            f"<td>{escape(confidence_text)}</td>"
+            f"<td>{escape(_text(factor.get('summary')))}</td>"
+            "</tr>"
+        )
+    return (
+        '<section class="four-factor"><h3>4팩터 평가</h3>'
+        '<div class="table-wrap"><table>'
+        '<thead><tr><th>팩터</th><th>점수</th><th>신뢰도</th><th>근거</th></tr></thead>'
+        f"<tbody>{''.join(rows)}</tbody></table></div></section>"
+    )
 
 
 def _workplace_rows(workplace: dict[str, Any]) -> str:
@@ -194,7 +247,7 @@ def render_comparison_html(comparison: dict[str, Any]) -> str:
       border-radius:18px; color:#fff; background:var(--primary); font-size:22px; font-weight:800; }}
     h2 {{ margin:0 0 4px; font-size:25px; }} h3 {{ margin:0 0 10px; font-size:17px; }}
     h4 {{ margin:18px 0 8px; }}
-    .metrics {{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:22px 0; }}
+    .metrics {{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:22px 0; }}
     .metric {{ padding:15px; border:1px solid var(--line); border-radius:13px; }}
     .metric>span {{ display:block; color:var(--muted); font-size:12px; }}
     .metric strong {{ display:block; margin-top:3px; font-size:19px; }}
@@ -235,7 +288,7 @@ def render_comparison_html(comparison: dict[str, Any]) -> str:
       <p class="empty">정렬 기준: {escape(_text(comparison.get('ranking_method')))}</p>
       <div class="table-wrap"><table>
         <thead><tr><th>순위</th><th>포지션</th><th>적합도</th><th>추천</th>
-          <th>FDE 유사도</th><th>FDE / SI</th></tr></thead>
+          <th>FDE 유사도</th><th>FDE / SI</th><th>4팩터</th></tr></thead>
         <tbody>{_ranking_summary_rows(rankings)}</tbody>
       </table></div>
     </section>

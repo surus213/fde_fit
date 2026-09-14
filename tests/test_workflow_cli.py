@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import workflow
 from classify_fde import FDEJobAssessment
-from wanted_jobs import WantedCompany, WantedJob
+from search_jobs import WantedCompany, WantedJob
 
 
 class WorkflowCliTest(unittest.TestCase):

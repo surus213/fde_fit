@@ -46,7 +46,7 @@ class HtmlReportTest(unittest.TestCase):
                 json.loads(json_path.read_text(encoding="utf-8")),
                 self.result,
             )
-            self.assertIn("원티드 공고 열기", html_path.read_text(encoding="utf-8"))
+            self.assertIn("원본 공고 열기", html_path.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

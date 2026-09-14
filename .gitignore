@@ -13,3 +13,20 @@ wheels/
 .env
 .env.*
 .DS_Store
+
+# Candidate data and other local personal information
+candidate_profile*.json
+
+# Generated search and analysis artifacts
+wanted_job_companies.json
+search_jobs_result.json
+search_jobs_analysis_result.json
+search_jobs_analysis_result.html
+.search_jobs_analysis_checkpoint.json
+.*checkpoint*.json
+*_checkpoint.json
+search_jobs_reports/
+*_final_job_fit.json
+*_final_job_fit.html
+*_fde_comparison.json
+*_fde_comparison.html

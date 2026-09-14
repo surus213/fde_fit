@@ -7,7 +7,7 @@ from classify_fde import (
     FDEJobAssessment,
     classify_fde_jobs,
 )
-from wanted_jobs import WantedJob
+from search_jobs import WantedJob
 
 
 def make_job(job_id: int, title: str) -> WantedJob:

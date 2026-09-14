@@ -11,7 +11,7 @@ from final_job_fit import final_job_fit
 from parse_job import parse_job
 from research_company import research_company
 from research_workplace import research_workplace
-from wanted_jobs import WantedJob, format_job_text
+from search_jobs import WantedJob, format_job_text
 
 
 ProgressCallback = Callable[[str], None]

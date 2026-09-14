@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from classify_fde import FDEJobAssessment
 from multi_job_analysis import run_fde_job_comparison
-from wanted_jobs import WantedJob
+from search_jobs import WantedJob
 
 
 def make_job(job_id: int, title: str) -> WantedJob:

@@ -46,7 +46,7 @@ def render_html_report(
     )
     source_link = (
         f'<a href="{escape(source_url, quote=True)}" target="_blank" '
-        f'rel="noopener noreferrer">원티드 공고 열기</a>'
+        f'rel="noopener noreferrer">원본 공고 열기</a>'
         if source_url
         else ""
     )

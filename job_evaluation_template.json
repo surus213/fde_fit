@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0",
+  "template_name": "범용 채용공고 4팩터 평가",
+  "description": "회사와 채용공고를 연봉, 워라밸, 안정성, 성장성의 네 가지 팩터로 평가하고 각 판단의 신뢰도를 별도로 기록하는 템플릿입니다.",
+  "evaluation_target": {
+    "company_name": null,
+    "job_title": null,
+    "job_url": null,
+    "evaluated_at": null
+  },
+  "scale": {
+    "score": {
+      "min": 0,
+      "max": 10,
+      "higher_is_better": true,
+      "bands": [
+        {
+          "min": 0,
+          "max": 2.9,
+          "label": "매우 낮음"
+        },
+        {
+          "min": 3,
+          "max": 4.9,
+          "label": "낮음"
+        },
+        {
+          "min": 5,
+          "max": 6.9,
+          "label": "보통"
+        },
+        {
+          "min": 7,
+          "max": 8.4,
+          "label": "높음"
+        },
+        {
+          "min": 8.5,
+          "max": 10,
+          "label": "매우 높음"
+        }
+      ]
+    },
+    "confidence": {
+      "min": 0,
+      "max": 1,
+      "display": "percentage",
+      "bands": [
+        {
+          "min": 0,
+          "max": 0.29,
+          "label": "매우 낮음"
+        },
+        {
+          "min": 0.3,
+          "max": 0.49,
+          "label": "낮음"
+        },
+        {
+          "min": 0.5,
+          "max": 0.69,
+          "label": "보통"
+        },
+        {
+          "min": 0.7,
+          "max": 0.84,
+          "label": "높음"
+        },
+        {
+          "min": 0.85,
+          "max": 1,
+          "label": "매우 높음"
+        }
+      ]
+    }
+  },
+  "confidence_rules": {
+    "description": "신뢰도는 점수의 높고 낮음이 아니라 해당 점수를 뒷받침하는 정보의 품질을 나타냅니다.",
+    "recommended_calculation": "각 근거의 quality, relevance, recency, independence를 종합하고, 서로 독립적인 근거 수와 출처 간 일치 여부를 반영해 0~1로 산정합니다.",
+    "guidelines": [
+      "공식 계약서, 오퍼레터, 감사보고서처럼 직접적이고 검증 가능한 최신 자료가 여러 개 일치하면 신뢰도를 높입니다.",
+      "회사 공식 홍보 자료만 있거나 익명 리뷰의 표본이 작으면 신뢰도를 낮춥니다.",
+      "회사 평균값을 특정 직무의 조건으로 추정한 경우 신뢰도를 낮춥니다.",
+      "출처가 서로 충돌하거나 자료가 오래되었으면 충돌 내용을 남기고 신뢰도를 낮춥니다.",
+      "근거가 없으면 중립 점수를 임의로 부여하지 말고 score와 confidence를 null로 유지합니다."
+    ]
+  },
+  "factor_weights": {
+    "salary": 0.25,
+    "work_life_balance": 0.25,
+    "stability": 0.25,
+    "growth": 0.25
+  },
+  "factors": {
+    "salary": {
+      "label": "연봉",
+      "definition": "해당 직무와 경력 수준에서 기대할 수 있는 기본급, 성과급, 스톡옵션, 복리후생을 포함한 총보상의 경쟁력과 투명성",
+      "evaluation_points": [
+        "해당 포지션의 기본급 범위",
+        "성과급의 기준과 실제 지급 가능성",
+        "스톡옵션의 조건과 현실적인 가치",
+        "복리후생의 금전적 가치",
+        "동종 직무·경력·지역 대비 보상 수준",
+        "연봉 정보의 공개 범위와 협상 투명성"
+      ],
+      "score": null,
+      "confidence": null,
+      "confidence_label": null,
+      "summary": null,
+      "positive_signals": [],
+      "risks": [],
+      "unknowns": [],
+      "evidence": []
+    },
+    "work_life_balance": {
+      "label": "워라밸",
+      "definition": "실제 근무시간과 업무 예측 가능성, 휴가 사용, 유연·원격근무, 야간·주말 대응, 출장·상주 부담을 종합한 지속 가능한 근무 여건",
+      "evaluation_points": [
+        "주당 실제 근무시간과 초과근무 빈도",
+        "야간·주말·온콜 대응 빈도",
+        "휴가 사용의 자율성과 실제 사용률",
+        "유연근무와 원격근무의 실제 운영 여부",
+        "고객사 출장·상주 비율과 기간",
+        "업무량과 일정의 예측 가능성"
+      ],
+      "score": null,
+      "confidence": null,
+      "confidence_label": null,
+      "summary": null,
+      "positive_signals": [],
+      "risks": [],
+      "unknowns": [],
+      "evidence": []
+    },
+    "stability": {
+      "label": "안정성",
+      "definition": "향후 최소 2년 동안 회사와 해당 직무가 유지되고 보상이 정상 지급될 가능성",
+      "evaluation_points": [
+        "매출과 현금흐름의 지속 가능성",
+        "현금 보유액, 런웨이, 부채와 자금조달 상태",
+        "고객 및 매출원의 집중도",
+        "최근 구조조정, 임금 체불, 잦은 퇴사 여부",
+        "제품·서비스의 반복 매출과 계약 지속성",
+        "해당 직무의 조직 내 필요성과 예산 확정 여부"
+      ],
+      "score": null,
+      "confidence": null,
+      "confidence_label": null,
+      "summary": null,
+      "positive_signals": [],
+      "risks": [],
+      "unknowns": [],
+      "evidence": []
+    },
+    "growth": {
+      "label": "성장성",
+      "definition": "회사의 사업 성장 가능성과 해당 직무에서 기술·역할·경력 자산을 확장할 가능성",
+      "evaluation_points": [
+        "시장과 회사의 매출·고객 성장 추세",
+        "제품 경쟁력과 차별성",
+        "PoC에서 본계약·반복 매출로 전환되는 비율",
+        "직무에서 습득할 수 있는 기술과 도메인 지식",
+        "역할 범위와 승진·리더십 기회",
+        "정량 성과와 재사용 가능한 방법론을 만들 가능성"
+      ],
+      "score": null,
+      "confidence": null,
+      "confidence_label": null,
+      "summary": null,
+      "positive_signals": [],
+      "risks": [],
+      "unknowns": [],
+      "evidence": []
+    }
+  },
+  "evidence_schema": {
+    "source_type": "offer_letter | contract | financial_filing | company_official | job_posting | employee_review | news | interview | other",
+    "source_name": "출처 이름",
+    "url": null,
+    "published_at": null,
+    "collected_at": null,
+    "claim": "평가에 사용한 사실 또는 주장",
+    "direction": "positive | negative | neutral | mixed",
+    "quality": "0~1 사이의 출처 품질",
+    "relevance": "0~1 사이의 평가 대상 관련성",
+    "recency": "0~1 사이의 최신성",
+    "independence": "0~1 사이의 회사로부터의 독립성"
+  },
+  "summary": {
+    "weighted_score": null,
+    "overall_confidence": null,
+    "confidence_adjusted_score": null,
+    "strongest_factor": null,
+    "weakest_factor": null,
+    "key_strengths": [],
+    "key_risks": [],
+    "must_verify": [],
+    "conclusion": null
+  },
+  "calculation_rules": {
+    "weighted_score": "sum(factor.score * factor_weight). 네 팩터의 score가 모두 있을 때만 계산합니다.",
+    "overall_confidence": "sum(factor.confidence * factor_weight). 네 팩터의 confidence가 모두 있을 때만 계산합니다.",
+    "confidence_adjusted_score": "sum((5 + (factor.score - 5) * factor.confidence) * factor_weight). 신뢰도가 낮은 점수는 중립값 5에 가깝게 보정합니다.",
+    "rounding": "점수는 소수점 첫째 자리, 신뢰도는 소수점 둘째 자리까지 저장합니다.",
+    "missing_value": "확인할 수 없는 값은 0이 아니라 null로 기록하며, 모든 입력값이 확인되기 전에는 종합 점수를 null로 유지합니다.",
+    "weight_rule": "factor_weights의 합은 1이어야 하며 목적에 따라 가중치를 변경할 수 있습니다."
+  },
+  "evaluation_rules": [
+    "공개적으로 확인할 수 없는 사실을 추정으로 단정하지 않습니다.",
+    "회사 전체 평균연봉과 해당 직무의 실제 연봉을 구분합니다.",
+    "투자유치와 조직 확장은 성장 신호일 수 있지만 안정성을 자동으로 보장하지 않습니다.",
+    "회사 성장성과 개인의 경력 성장성을 함께 확인하고 한쪽만으로 성장성 점수를 결정하지 않습니다.",
+    "팩터 점수와 신뢰도는 독립적으로 기록합니다.",
+    "하나의 출처가 여러 팩터에 쓰이면 팩터별 관련성을 별도로 평가합니다."
+  ]
+}

@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from pydantic import BaseModel, Field
 
-from wanted_jobs import WantedJob, is_fde_job_title
+from search_jobs import WantedJob, is_fde_job_title
 
 
 load_dotenv()

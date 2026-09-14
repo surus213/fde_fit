@@ -22,7 +22,7 @@ from classify_fde import (
 from comparison_report import write_comparison_reports
 from html_report import write_reports
 from multi_job_analysis import run_fde_job_comparison
-from wanted_jobs import (
+from search_jobs import (
     WantedAPIError,
     WantedJob,
     find_company_jobs,
